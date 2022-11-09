@@ -1,18 +1,24 @@
 #!/usr/bin/env python3
 
-import argparse
+import json
+from gendiff.cli import parse
 
 
-parser = argparse.ArgumentParser(
-    description='Compares two configuration files and shows a difference.')
+args = parse()
+json1 = args.first_file
+json2 = args.second_file
 
-# Positional args
-parser.add_argument('first_file')
-parser.add_argument('second_file')
 
-#Optional args
-parser.add_argument('-f', '--format', help='set format of output')
+with open(json1) as js1:
+    json_data1 = json.load(js1)
 
-args = parser.parse_args()
+with open(json2) as js2:
+    json_data2 = json.load(js2)
 
-print(args)
+def build_diff(json_data1: dict, json_data2: dict):
+    sorted_keys_1 = sorted([*json_data1])
+    sorted_keys_2 = sorted([*json_data2])
+
+    return sorted_keys_1, sorted_keys_2
+
+print(build_diff(json_data1, json_data2))
